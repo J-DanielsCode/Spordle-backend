@@ -1,0 +1,13 @@
+# Local .terraform directory
+.terraform/
+
+# Local state files
+*.tfstate
+*.tfstate.backup
+current_state.json
+
+# Crash logs
+crash.log
+
+# Ignore Terraform plan output
+*.tfplan
