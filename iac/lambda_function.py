@@ -49,7 +49,7 @@ def lambda_handler(event, context):
 
     except Exception as e:
         print('Error:', e)
-        response = build_response(500, str(e))
+        response = "Something went wrong!"
    
     return response
 
