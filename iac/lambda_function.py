@@ -145,4 +145,5 @@ def build_response(status_code, body):
 
 def handle_dynamo_error(e, message):
     print("DynamoDB error:", e)
-    return build_response(500, {'error': message, 'details': e.response['Error']['Message']})
+    # return build_response(500, {'error': message, 'details': e.response['Error']['Message']})
+    return "Something has gone wrong here!"
