@@ -5,7 +5,7 @@
 *.tfstate
 *.tfstate.backup
 current_state.json
-.lock
+*.lock
 
 # Crash logs
 crash.log
