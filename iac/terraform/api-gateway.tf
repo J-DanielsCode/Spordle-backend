@@ -43,6 +43,21 @@ resource "aws_api_gateway_method" "status_options" {
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
 }
 
+# API status integrations
+resource "aws_api_gateway_integration" "status_get_integration" {
+  http_method = aws_api_gateway_method.status_get.http_method
+  resource_id = aws_api_gateway_resource.status_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "status_options_integration" {
+  http_method = aws_api_gateway_method.status_options.http_method
+  resource_id = aws_api_gateway_resource.status_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "MOCK"
+}
+
 # API all players methods
 resource "aws_api_gateway_method" "players_get_all" {
   authorization = "NONE"
@@ -56,6 +71,21 @@ resource "aws_api_gateway_method" "players_options" {
   http_method = "OPTIONS"
   resource_id = aws_api_gateway_resource.all_players_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+}
+
+# API all players integration
+resource "aws_api_gateway_integration" "get-all-integration" {
+  http_method = aws_api_gateway_method.players_get_all.http_method
+  resource_id = aws_api_gateway_resource.all_players_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "get_all_options_integration" {
+  http_method = aws_api_gateway_method.players_options.http_method
+  resource_id = aws_api_gateway_resource.all_players_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "MOCK"
 }
 
 # API one player methods
@@ -92,4 +122,40 @@ resource "aws_api_gateway_method" "one_player_post" {
   http_method = "POST"
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+}
+
+# One player integrations
+resource "aws_api_gateway_integration" "get_one_integration" {
+  http_method = aws_api_gateway_method.one_player_get.http_method
+  resource_id = aws_api_gateway_resource.one_player_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "delete_one_integration" {
+  http_method = aws_api_gateway_method.one_player_delete.http_method
+  resource_id = aws_api_gateway_resource.one_player_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "patch_one_integration" {
+  http_method = aws_api_gateway_method.one_player_patch.http_method
+  resource_id = aws_api_gateway_resource.one_player_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "post_one_integration" {
+  http_method = aws_api_gateway_method.one_player_post.http_method
+  resource_id = aws_api_gateway_resource.one_player_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "AWS_PROXY"
+}
+
+resource "aws_api_gateway_integration" "one_player_options_integration" {
+  http_method = aws_api_gateway_method.one_player_options.http_method
+  resource_id = aws_api_gateway_resource.one_player_resource.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  type = "MOCK"
 }
