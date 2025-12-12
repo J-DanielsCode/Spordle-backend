@@ -192,4 +192,13 @@ resource "aws_api_gateway_deployment" "player_data_api_deployment" {
       aws_api_gateway_integration.one_player_options_integration,
     ]))
   }
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "players_api_stage" {
+  deployment_id = aws_api_gateway_deployment.player_data_api_deployment.id
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  stage_name = "production_2.0"
 }
