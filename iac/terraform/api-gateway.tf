@@ -74,7 +74,7 @@ resource "aws_api_gateway_method" "players_options" {
 }
 
 # API all players integration
-resource "aws_api_gateway_integration" "get-all-integration" {
+resource "aws_api_gateway_integration" "get_all_integration" {
   http_method = aws_api_gateway_method.players_get_all.http_method
   resource_id = aws_api_gateway_resource.all_players_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
@@ -158,4 +158,38 @@ resource "aws_api_gateway_integration" "one_player_options_integration" {
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
   type = "MOCK"
+}
+
+# API deployment
+resource "aws_api_gateway_deployment" "player_data_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+
+  triggers = {
+    redeployment = sha1(jsondecode([
+      #status
+      aws_api_gateway_resource.status_resource.id,
+      aws_api_gateway_method.status_get.id,
+      aws_api_gateway_method.status_options.id,
+      aws_api_gateway_integration.status_get_integration.id,
+      aws_api_gateway_integration.status_options_integration.id,
+      #all players
+      aws_api_gateway_resource.all_players_resource.id,
+      aws_api_gateway_method.players_get_all.id,
+      aws_api_gateway_method.players_options.id,
+      aws_api_gateway_integration.get_all_integration.id,
+      aws_api_gateway_integration.get_all_options_integration.id,
+      #one player
+      aws_api_gateway_resource.one_player_resource.id,
+      aws_api_gateway_method.one_player_get.id,
+      aws_api_gateway_method.one_player_options.id,
+      aws_api_gateway_method.one_player_delete.id,
+      aws_api_gateway_method.one_player_patch.id,
+      aws_api_gateway_method.one_player_post.id,
+      aws_api_gateway_integration.get_one_integration.id,
+      aws_api_gateway_integration.delete_one_integration.id,
+      aws_api_gateway_integration.patch_one_integration.id,
+      aws_api_gateway_integration.post_one_integration.id,
+      aws_api_gateway_integration.one_player_options_integration,
+    ]))
+  }
 }
