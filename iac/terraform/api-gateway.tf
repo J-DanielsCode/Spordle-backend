@@ -202,3 +202,9 @@ resource "aws_api_gateway_stage" "players_api_stage" {
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
   stage_name = "production_2.0"
 }
+
+output "base_api_url" {
+  description = "The base invocation url for the API Gateway (Stage: production_2.0)"
+  value = aws_api_gateway_stage.players_api_stage.invoke_url
+}
+
