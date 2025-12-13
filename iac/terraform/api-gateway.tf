@@ -208,3 +208,13 @@ output "base_api_url" {
   value = aws_api_gateway_stage.players_api_stage.invoke_url
 }
 
+resource "aws_lambda_permission" "allow_api_gateway" {
+  statement_id = "AllowExecutionFromAPIGateway"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda.player_api_lambda_function
+  principal = "apigateway.amazonaws.com"
+
+  # The /* part allows invocation from any stage, method and resource path
+  # within API Gateway.
+  source_arn = "${aws_api_gateway_rest_api.player_data_api.execution_arn}/*"
+}
