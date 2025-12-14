@@ -5,7 +5,7 @@
 *.tfstate
 *.tfstate.backup
 current_state.json
-*.lock
+.terraform.lock.hcl
 
 # Crash logs
 crash.log
