@@ -24,13 +24,13 @@ data "aws_iam_policy_document" "lambda_cloudwatch_policy" {
       "logs:PutLogEvents"
     ]
 
-    resources = "*"
+    resources = ["*"]
   }
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
   name                  = "lambda_execution_role"
-  assume_role_policy    = data.aws_iam_policy_document.assume_role  
+  assume_role_policy    = data.aws_iam_policy_document.assume_role.json  
 }
 
 resource "aws_iam_policy" "lambda_logging_policy" {
@@ -40,15 +40,15 @@ resource "aws_iam_policy" "lambda_logging_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logs_attach" {
-  role = aws_iam_role.iam_for_lambda.lambda_execution_role
+  role = aws_iam_role.iam_for_lambda.name
   policy_arn = aws_iam_policy.lambda_logging_policy.arn
 }
 
 # Package the lambda function code
 data "archive_file" "lambda" {
   type = "zip"
-  source_file = "${path.module}../../src/lambda_function.py"
-  output_path = "${path.module}../lambda_function_src.zip"
+  source_file = "${path.module}./../src/lambda_function.py"
+  output_path = "${path.module}./lambda_function_src.zip"
 }
 
 # Lambda function

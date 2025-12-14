@@ -2,7 +2,7 @@
 resource "aws_iam_role" "api_gateway_cloudwatch_role" {
   name = "APIGatewayCloudWatchLogsRole"
 
-  assume_role_policy = jsondecode({
+  assume_role_policy = jsonencode({
     Version = "2012-12-17"
     Statement = [
       {
@@ -22,7 +22,7 @@ resource "aws_iam_role_policy" "api_gateway_cloudwatch_policy" {
   name = "APIGatewayCloudWatchLogsPolicy"
   role = aws_iam_role.api_gateway_cloudwatch_role.id
 
-  policy = jsondecode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -204,7 +204,7 @@ resource "aws_api_gateway_deployment" "player_data_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
 
   triggers = {
-    redeployment = sha1(jsondecode([
+    redeployment = sha1(jsonencode([
       #status
       aws_api_gateway_resource.status_resource.id,
       aws_api_gateway_method.status_get.id,
@@ -270,7 +270,7 @@ output "base_api_url" {
 resource "aws_lambda_permission" "allow_api_gateway" {
   statement_id = "AllowExecutionFromAPIGateway"
   action = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda.player_api_lambda_function
+  function_name = aws_lambda_function.lambda.function_name
   principal = "apigateway.amazonaws.com"
 
   # The /* part allows invocation from any stage, method and resource path
