@@ -1,42 +1,3 @@
-# IAM role dor API gateway logs
-resource "aws_iam_role" "api_gateway_cloudwatch_role" {
-  name = "APIGatewayCloudWatchLogsRole"
-
-  assume_role_policy = jsondecode({
-    Version = "2012-12-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid = ""
-        Principal = {
-          Service = "apigateway.amazonaws.com"
-        }
-      },
-    ]
-  })
-}
-
-# Policy that grants log writing permissions
-resource "aws_iam_role_policy" "api_gateway_cloudwatch_policy" {
-  name = "APIGatewayCloudWatchLogsPolicy"
-  role = aws_iam_role.api_gateway_cloudwatch_role.id
-
-  policy = jsondecode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
 # Setting up REST API
 resource "aws_api_gateway_rest_api" "player_data_api" {
   name = "NBA-player-api"
@@ -240,26 +201,6 @@ resource "aws_api_gateway_stage" "players_api_stage" {
   deployment_id = aws_api_gateway_deployment.player_data_api_deployment.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
   stage_name = "production_2.0"
-
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
-    format = "$context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] \"$context.httpMethod $context.resourcePath $context.protocol\" $context.status $context.responseLength $context.requestId"
-  }
-
-  # For finding function invocation problems
-  xray_tracing_enabled = true
-
-  depends_on = [aws_iam_role.api_gateway_cloudwatch_role]
-
-  lifecycle {
-    ignore_changes = [ 
-      variables
-    ]
-  }
-
-  variables = {
-    "logging_level" = "INFO" #choice is INFO or ERROR, INFO = less detail, ERROR = errors only
-  }
 }
 
 output "base_api_url" {
