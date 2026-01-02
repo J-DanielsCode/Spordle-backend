@@ -251,7 +251,7 @@ resource "aws_api_gateway_deployment" "player_data_api_deployment" {
 resource "aws_api_gateway_stage" "players_api_stage" {
   deployment_id = aws_api_gateway_deployment.player_data_api_deployment.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
-  stage_name = "production_2.0"
+  stage_name = "production_2"
 
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gateway_logs.arn
