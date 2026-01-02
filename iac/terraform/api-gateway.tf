@@ -1,3 +1,8 @@
+# Tells API Gateway for thid region which role to use globally
+resource "aws_api_gateway_account" "settings" {
+  cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch_role.arn
+}
+
 # IAM role dor API gateway logs
 resource "aws_iam_role" "api_gateway_cloudwatch_role" {
   name = "APIGatewayCloudWatchLogsRole"
@@ -261,7 +266,10 @@ resource "aws_api_gateway_stage" "players_api_stage" {
   # For finding function invocation problems
   xray_tracing_enabled = true
 
-  depends_on = [aws_iam_role.api_gateway_cloudwatch_role]
+  depends_on = [
+    aws_iam_role.api_gateway_cloudwatch_role,
+    aws_api_gateway_account.settings
+  ]
 
   lifecycle {
     ignore_changes = [ 
