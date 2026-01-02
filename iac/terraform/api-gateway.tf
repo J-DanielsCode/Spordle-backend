@@ -3,7 +3,7 @@ resource "aws_iam_role" "api_gateway_cloudwatch_role" {
   name = "APIGatewayCloudWatchLogsRole"
 
   assume_role_policy = jsonencode({
-    Version = "2012-12-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = "sts:AssumeRole"
@@ -87,7 +87,9 @@ resource "aws_api_gateway_integration" "status_get_integration" {
   http_method = aws_api_gateway_method.status_get.http_method
   resource_id = aws_api_gateway_resource.status_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "status_options_integration" {
@@ -117,7 +119,9 @@ resource "aws_api_gateway_integration" "get_all_integration" {
   http_method = aws_api_gateway_method.players_get_all.http_method
   resource_id = aws_api_gateway_resource.all_players_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "get_all_options_integration" {
@@ -175,21 +179,27 @@ resource "aws_api_gateway_integration" "delete_one_integration" {
   http_method = aws_api_gateway_method.one_player_delete.http_method
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "patch_one_integration" {
   http_method = aws_api_gateway_method.one_player_patch.http_method
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "post_one_integration" {
   http_method = aws_api_gateway_method.one_player_post.http_method
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "one_player_options_integration" {
@@ -228,7 +238,7 @@ resource "aws_api_gateway_deployment" "player_data_api_deployment" {
       aws_api_gateway_integration.delete_one_integration.id,
       aws_api_gateway_integration.patch_one_integration.id,
       aws_api_gateway_integration.post_one_integration.id,
-      aws_api_gateway_integration.one_player_options_integration,
+      aws_api_gateway_integration.one_player_options_integration.id,
     ]))
   }
   lifecycle {
