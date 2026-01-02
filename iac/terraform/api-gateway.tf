@@ -172,7 +172,9 @@ resource "aws_api_gateway_integration" "get_one_integration" {
   http_method = aws_api_gateway_method.one_player_get.http_method
   resource_id = aws_api_gateway_resource.one_player_resource.id
   rest_api_id = aws_api_gateway_rest_api.player_data_api.id
+  integration_http_method = "POST"
   type = "AWS_PROXY"
+  uri = aws_lambda_function.lambda.invoke_arn
 }
 
 resource "aws_api_gateway_integration" "delete_one_integration" {
