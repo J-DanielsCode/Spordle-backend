@@ -1,6 +1,9 @@
 # Tells API Gateway for thid region which role to use globally
 resource "aws_api_gateway_account" "settings" {
   cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch_role.arn
+  depends_on = [ 
+    aws_iam_role_policy_attachment.api_gateway_cloudwatch_attach
+  ]
 }
 
 # IAM role dor API gateway logs
@@ -22,26 +25,31 @@ resource "aws_iam_role" "api_gateway_cloudwatch_role" {
   })
 }
 
-# Policy that grants log writing permissions
-resource "aws_iam_role_policy" "api_gateway_cloudwatch_policy" {
-  name = "APIGatewayCloudWatchLogsPolicy"
-  role = aws_iam_role.api_gateway_cloudwatch_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+resource "aws_iam_role_policy_attachment" "api_gateway_cloudwatch_attach" {
+  role = aws_iam_role.api_gateway_cloudwatch_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
+
+# Policy that grants log writing permissions
+# resource "aws_iam_role_policy" "api_gateway_cloudwatch_policy" {
+#   name = "APIGatewayCloudWatchLogsPolicy"
+#   role = aws_iam_role.api_gateway_cloudwatch_role.id
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "logs:CreateLogGroup",
+#           "logs:CreateLogStream",
+#           "logs:PutLogEvents"
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
 # Setting up REST API
 resource "aws_api_gateway_rest_api" "player_data_api" {
   name = "NBA-player-api"
