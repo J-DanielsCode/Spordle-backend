@@ -28,6 +28,33 @@ data "aws_iam_policy_document" "lambda_cloudwatch_policy" {
   }
 }
 
+#DYnamoDB policy document, Policy and attachment
+data "aws_iam_policy_document" "lambda_dynamoDB_policy" {
+  statement {
+    effect = "Allow"
+    actions = [ 
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:Query",
+      "dynamodb:Scan"
+    ]
+    resources = [ "arn:aws:dynamodb:eu-west-2:098597569789:table/nba-player-data" ]
+  }
+}
+
+resource "aws_iam_policy" "lambda_dynamoDB_exec_policy" {
+  name = "lambda_dynamodb_access"
+  description = "Allows lambda to access NBA player data table"
+  policy = data.aws_iam_policy_document.lambda_dynamoDB_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_attach" {
+  role = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_dynamoDB_exec_policy.arn
+}
+
 resource "aws_iam_role" "iam_for_lambda" {
   name                  = "lambda_execution_role"
   assume_role_policy    = data.aws_iam_policy_document.assume_role.json  
@@ -60,5 +87,5 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = data.archive_file.lambda.output_base64sha256
 
   runtime = "python3.13"
-  handler = "lambda_handler"
+  handler = "lambda_function.lambda_handler"
 }
