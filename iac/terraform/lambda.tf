@@ -40,7 +40,10 @@ data "aws_iam_policy_document" "lambda_dynamoDB_policy" {
       "dynamodb:Query",
       "dynamodb:Scan"
     ]
-    resources = [ "arn:aws:dynamodb:eu-west-2:098597569789:table/nba-player-data" ]
+    resources = [ 
+      "arn:aws:dynamodb:eu-west-2:098597569789:table/nba-player-data",
+      "arn:aws:dynamodb:eu-west-2:098597569789:table/nba-player-data/index/*"
+    ]
   }
 }
 
