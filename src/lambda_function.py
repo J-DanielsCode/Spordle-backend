@@ -49,8 +49,7 @@ def lambda_handler(event, context):
 
     except Exception as e:
         print('Error:', e)
-        response = "Something went wrong!"
-   
+        response = build_response(500, {'error': 'Internal Server Error', 'details': str(e)})   
     return response
 
 # -- CRUD Helpers --
@@ -59,7 +58,7 @@ def get_player(player_id: int):
         print('Player ID:', player_id)
         # result = dynamodb_table.get_item(Key={'player_id': int(player_id)})
         result = dynamodb_table.query(
-            IndexName="player_id-index",
+            IndexName="unique_id",
             KeyConditionExpression=Key("player_id").eq(int(player_id)),
         )
         print('Result:', result)
@@ -146,4 +145,4 @@ def build_response(status_code, body):
 def handle_dynamo_error(e, message):
     print("DynamoDB error:", e)
     # return build_response(500, {'error': message, 'details': e.response['Error']['Message']})
-    return f"Something has gone wrong here, '{message}'."
+    return build_response(500, {'error': message, 'details': str(e)})
